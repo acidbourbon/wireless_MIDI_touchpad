@@ -2,7 +2,6 @@
 //#define TAKT 12e6
 #define TAKT F_CPU
 
-
 //Bits Makro
 #define BITS(H,L)  (0b##H ##L)
 
@@ -51,9 +50,9 @@ typedef unsigned short int u16;
 #define MAX_ADB 9
 u08 adb_werte[MAX_ADB];
 u08 t0ovfcount;
+volatile u08 adb_data_length;
 
-ISR( TIMER0_OVF_vect)
-{
+ISR( TIMER0_OVF_vect) {
 	t0ovfcount++;
 }
 
@@ -197,7 +196,8 @@ void touchpad_init(void) {
 
 uint8_t touchpad_read(void) {
 	adb_werte[0] = COM_TALK0;
-	return adb();
+	adb_data_length = adb();
+	return adb_data_length;
 }
 
 void touchpad_set_abs_mode(void) {
@@ -229,9 +229,31 @@ uint16_t y_abs(void) {
 			| ((adb_werte[3] & 0b01110000) << 3) | (adb_werte[1] & 0b01111111);
 }
 
+int8_t delta_y(void) {
+	if(adb_data_length ==0) {
+		return 0;
+	}
+	if (adb_werte[1] & 0b01000000) {
+		return -((128 - adb_werte[1]) & 0b00111111);
+	} else {
+		return adb_werte[1] & 0b00111111;
+	}
+}
+
+int8_t delta_x(void) {
+	if(adb_data_length ==0) {
+		return 0;
+	}
+	if (adb_werte[2] & 0b01000000) {
+		return -((128 - adb_werte[2]) & 0b00111111);
+	} else {
+		return adb_werte[2] & 0b00111111;
+	}
+}
+
 uint8_t decode_field(void) {
 	static uint8_t last_pressure = 0;
-	uint8_t pressure,i,j;
+	uint8_t pressure, i, j;
 	uint8_t return_val = 0;
 	static uint16_t x_mem, y_mem;
 	uint16_t x, y;
@@ -254,10 +276,10 @@ uint8_t decode_field(void) {
 
 	if ((pressure == 0) && (last_pressure > 0)) {
 
-		i = (y-MIN_ABS_Y)/PAD_ROW_HEIGHT;
-		j = (x-MIN_ABS_X)/PAD_COL_WIDTH;
+		i = (y - MIN_ABS_Y) / PAD_ROW_HEIGHT;
+		j = (x - MIN_ABS_X) / PAD_COL_WIDTH;
 
-		return_val = i*PAD_COLS+j+1;
+		return_val = i * PAD_COLS + j + 1;
 
 	}
 
