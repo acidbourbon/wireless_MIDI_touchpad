@@ -268,7 +268,7 @@ int8_t delta_x(void) {
 		return adb_werte[2] & 0b00111111;
 	}
 }
-
+/*
 uint8_t touchpad_button_pressed(void){
 	static uint8_t button_status=0;
 
@@ -284,6 +284,7 @@ uint8_t touchpad_button_pressed(void){
 	}
 
 }
+*/
 
 uint8_t decode_field(void) {
 	static uint8_t last_pressure = 0;

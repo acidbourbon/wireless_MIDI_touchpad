@@ -155,9 +155,6 @@ int main(void) {
 		uart_puts("\ty_pos: ");
 		my_uitoa(y, stringbuffer, 4);
 		uart_puts(stringbuffer);
-		uart_puts("\tbutton: ");
-		my_uitoa(touchpad_button_pressed(), stringbuffer, 4);
-		uart_puts(stringbuffer);
 		uart_puts("\r");
 
 	}
