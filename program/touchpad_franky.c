@@ -215,6 +215,24 @@ void touchpad_set_abs_mode(void) {
 	adb();
 }
 
+void touchpad_set_rel_mode_100dpi(void) {
+	// Auf Relativmodus umschalten
+	adb_werte[0] = COM_LISTEN3;
+	adb_werte[1] = BITS(0110,0011);
+	adb_werte[2] = 1; //default modus: 100 dpi mouse
+	adb();
+
+}
+
+void touchpad_set_rel_mode_200dpi(void) {
+	// Auf Relativmodus umschalten
+	adb_werte[0] = COM_LISTEN3;
+	adb_werte[1] = BITS(0110,0011);
+	adb_werte[2] = 2; //200 dpi mouse
+	adb();
+
+}
+
 uint8_t z_pressure(void) {
 	return ((adb_werte[5] & 0b01110000) >> 1) | (adb_werte[5] & 0b00000111);
 }
@@ -249,6 +267,22 @@ int8_t delta_x(void) {
 	} else {
 		return adb_werte[2] & 0b00111111;
 	}
+}
+
+uint8_t touchpad_button_pressed(void){
+	static uint8_t button_status=0;
+
+	if(adb_data_length ==0) {
+		return button_status;
+	}
+	if(adb_werte[1]&0b10000000){
+		button_status=1;
+		return 1;
+	}else{
+		button_status=0;
+		return 0;
+	}
+
 }
 
 uint8_t decode_field(void) {

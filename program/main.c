@@ -119,7 +119,8 @@ int main(void) {
 #elif DEMO_MODE == RELATIVE_MODE
 
 	uart_puts("you selected the relative position demo modus:\n\r");
-
+	touchpad_set_rel_mode_100dpi();
+//	touchpad_set_rel_mode_200dpi(); uncomment if you want double resolution
 	uint8_t x, y = 0;
 	int8_t dx, dy = 0;
 
@@ -153,6 +154,9 @@ int main(void) {
 		uart_puts(stringbuffer);
 		uart_puts("\ty_pos: ");
 		my_uitoa(y, stringbuffer, 4);
+		uart_puts(stringbuffer);
+		uart_puts("\tbutton: ");
+		my_uitoa(touchpad_button_pressed(), stringbuffer, 4);
 		uart_puts(stringbuffer);
 		uart_puts("\r");
 
