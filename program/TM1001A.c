@@ -1,5 +1,40 @@
-//#define TAKT 7372800  //Quarzfrequenz
-//#define TAKT 12e6
+// This code is based on the work of Frank H. (franky1969) from the
+// Mikrocontroller.net forum.
+// I modified the code thusly that it runs on an ATMega8 with more than 8 MHz
+// (make use of the counter 0 overflow interrupt to count to numbers greater
+// than 255) and added a set of functions that make your life easy,
+// i.e. spare you the work of crawling through the ADB register documentation yourself.
+//
+// You cannot use counter 0 for any other thing when using the touchpad!
+//
+// Have fun! - Michael W. (acidbourbon)
+//
+// acidbourbon.wordpress.com
+// June 2013
+
+
+// define here the port and the pin where you cave connected
+// the ADB (I/O) line from your TM1001A touchpad
+#define ADB_BIT (1<<2)
+#define ADB_PIN PIND
+#define ADB_POUT PORTD
+#define ADB_PDIR DDRD
+
+// when touchpad is in keypad mode the next two defines set the number
+// of rows and columns of the
+#define PAD_ROWS 2
+#define PAD_COLS 3
+
+
+
+
+
+
+
+
+
+
+
 #define TAKT F_CPU
 
 //Bits Makro
@@ -12,10 +47,6 @@
 
 #define PAD_WIDTH (MAX_ABS_X-MIN_ABS_X)
 #define PAD_HEIGHT (MAX_ABS_Y-MIN_ABS_Y)
-
-#define PAD_ROWS 2
-#define PAD_COLS 3
-
 #define PAD_COL_WIDTH (PAD_WIDTH/PAD_COLS)
 #define PAD_ROW_HEIGHT (PAD_HEIGHT/PAD_ROWS)
 
@@ -32,11 +63,7 @@
 #define TIMER_VT_256 256
 #define TIMER_VT_1024 1024
 
-// PORT B
-#define ADB_BIT (1<<2)  // ADB
-#define ADB_PIN PIND
-#define ADB_POUT PORTD
-#define ADB_PDIR DDRD
+
 
 typedef unsigned char u08;
 typedef unsigned short int u16;
@@ -52,23 +79,30 @@ u08 adb_werte[MAX_ADB];
 u08 t0ovfcount;
 volatile u08 adb_data_length;
 
+
 ISR( TIMER0_OVF_vect) {
 	t0ovfcount++;
 }
+
+uint16_t t0ext(void) {
+	return (t0ovfcount * 256 + (u16) TCNT0); // return current counter value
+	// plus number of already passed counter cycles times 256
+}
+
+void t0rst(void) {
+	TCNT0 = 0; // set counter to zero
+	t0ovfcount = 0; // set overflow counter to zero
+
+}
+
+
 
 // ADB Register auslesen / schreiben 
 // Rückgabe Anzahl der Empfangenen Daten 
 // Befehl in adb_werte[0]. Empfangene bzw. zu sendende Daten in adb_werte[1 bis 8]
 
-uint16_t t0ext(void) {
-	return (t0ovfcount * 256 + (u16) TCNT0);
-}
 
-void t0rst(void) {
-	TCNT0 = 0; // Zähler auf null setzen
-	t0ovfcount = 0;
 
-}
 
 u08 adb(void) {
 	u08 bitpos;
