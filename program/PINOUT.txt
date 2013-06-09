@@ -1,0 +1,9 @@
+TM1001A pinout:
+1 5V
+2 ADB
+3 ?
+4 GND
+5 ?
+6 ?
+7 BUTTON 1 / againts GND
+8 GND
