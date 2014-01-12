@@ -40,10 +40,10 @@
 //Bits Makro
 #define BITS(H,L)  (0b##H ##L)
 
-#define MIN_ABS_X 150
-#define MAX_ABS_X 1450
-#define MIN_ABS_Y 210
-#define MAX_ABS_Y 1130
+#define MIN_ABS_X 200
+#define MAX_ABS_X 1400
+#define MIN_ABS_Y 230
+#define MAX_ABS_Y 1110
 
 #define PAD_WIDTH (MAX_ABS_X-MIN_ABS_X)
 #define PAD_HEIGHT (MAX_ABS_Y-MIN_ABS_Y)
