@@ -8,7 +8,7 @@
 MCU = atmega8
 FORMAT = ihex
 TARGET = main
-SRC = $(TARGET).c
+SRC = uart.c rfm70.c $(TARGET).c
 ASRC = 
 OPT = s
 
@@ -82,7 +82,7 @@ LDFLAGS = $(EXTMEMOPTS) $(LDMAP) $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 
 # Programming support using avrdude. Settings and variables.
 
-AVRDUDE_PROGRAMMER = usbtiny
+AVRDUDE_PROGRAMMER = avrisp2
 AVRDUDE_PORT = usb
 
 AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex

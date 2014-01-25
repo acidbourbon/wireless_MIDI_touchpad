@@ -32,8 +32,8 @@ char stringbuffer[16];
 
 // This program uses "Interrupt UART library with receive/transmit circular buffers"
 // by Peter Fleury
-#include "uart.c"
-#include "rfm70.c"
+#include "uart.h"
+#include "rfm70.h"
 
 // convert an unsigned integer to string
 void my_uitoa(uint32_t zahl, char* string, uint8_t no_digits) {
